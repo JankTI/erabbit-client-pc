@@ -1,10 +1,10 @@
 <template>
-  <div class="home-category" @mouseleave="categoryId=null">
+  <div class="home-category" @mouseleave="categoryId = null">
     <ul class="menu">
       <li
         v-for="item in menuList"
         :key="item.id"
-        :class="{active:categoryId&&categoryId===item.id}"
+        :class="{ active: categoryId && categoryId === item.id }"
         @mouseenter="categoryId = item.id"
       >
         <RouterLink :to="`/category/${item.id}`">{{ item.name }}</RouterLink>
@@ -18,11 +18,24 @@
             {{ sub.name }}
           </RouterLink>
         </template>
+        <!-- 骨架 -->
+        <span v-else>
+          <XtxSkeleton
+            width="60px"
+            height="18px"
+            style="margin-right: 5px"
+            bg="rgba(255,255,255,0.2)"
+          />
+          <XtxSkeleton width="50px" height="18px" bg="rgba(255,255,255,0.2)" />
+        </span>
       </li>
     </ul>
     <!-- 弹层 -->
     <div class="layer">
-      <h4>{{currCategory && currCategory.id === 'brand' ? '品牌' : '分类'}}推荐 <small>根据您的购买或浏览记录推荐</small></h4>
+      <h4>
+        {{ currCategory && currCategory.id === "brand" ? "品牌" : "分类" }}推荐
+        <small>根据您的购买或浏览记录推荐</small>
+      </h4>
       <!-- 商品 -->
       <ul v-if="currCategory && currCategory.goods">
         <li v-for="item in currCategory.goods" :key="item.id">
@@ -59,7 +72,7 @@
 <script>
 import { computed, reactive, ref } from "vue";
 import { useStore } from "vuex";
-import { findBrand } from '@/api/home'
+import { findBrand } from "@/api/home";
 export default {
   name: "HomeCategory",
   setup() {
@@ -93,8 +106,8 @@ export default {
     });
 
     // 获取品牌数据 尽量不要使用async在setup上
-    findBrand().then(data => {
-      brand.brands = data.result
+    findBrand().then((data) => {
+      brand.brands = data.result;
     });
 
     return {
@@ -118,7 +131,8 @@ export default {
       padding-left: 40px;
       height: 50px;
       line-height: 50px;
-      &:hover,&.active {
+      &:hover,
+      &.active {
         background: @xtxColor;
       }
       a {
@@ -131,10 +145,10 @@ export default {
     }
   }
   // 弹出层样式
-    .layer {
+  .layer {
     width: 990px;
     height: 500px;
-    background: rgba(255,255,255,0.8);
+    background: rgba(255, 255, 255, 0.8);
     position: absolute;
     left: 250px;
     top: 0;
@@ -173,8 +187,8 @@ export default {
             background: #e3f9f4;
           }
           img {
-              width: 95px;
-              height: 95px;
+            width: 95px;
+            height: 95px;
           }
           .info {
             padding-left: 10px;
@@ -222,6 +236,19 @@ export default {
     .layer {
       display: block;
     }
+  }
+}
+
+// 骨架动画
+.xtx-skeleton {
+  animation: fade 1s linear infinite alternate;
+}
+@keyframes fade {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 1;
   }
 }
 </style>
