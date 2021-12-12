@@ -1,17 +1,21 @@
 <template>
   <ul class="app-header-nav">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
-    <li v-for="item in list" :key="item.id" @mouseenter="show(item)" @mouseleave="hide(item)">
-      <RouterLink @click="hide(item)" :to="`/category/${item.id}`">{{item.name}}</RouterLink>
-      <div class="layer" :class="{open: item.open}">
+    <li
+      v-for="item in list"
+      :key="item.id"
+      @mouseenter="show(item)"
+      @mouseleave="hide(item)"
+    >
+      <RouterLink @click="hide(item)" :to="`/category/${item.id}`">{{
+        item.name
+      }}</RouterLink>
+      <div class="layer" :class="{ open: item.open }">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
             <RouterLink @click="hide(item)" :to="`/category/sub/${item.id}`">
-              <img
-                :src="sub.picture"
-                alt=""
-              />
-              <p>{{sub.name}}</p>
+              <img :src="sub.picture" alt="" />
+              <p>{{ sub.name }}</p>
             </RouterLink>
           </li>
         </ul>
@@ -24,30 +28,31 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 export default {
-  name: "AppHeaderNav",
+  name: 'AppHeaderNav',
   setup() {
-    const store = useStore()
+    const store = useStore();
     // 拿到 vuex中的分类列表
     const list = computed(() => {
-      return store.state.category.list
-    })
+      return store.state.category.list;
+    });
 
     // 跳转的时候不会关闭二级类目 通过数据来控制
     // 1. vuex 每个分类加上open数据
     // 2. vuex 提供显示和隐藏函数 修改open数据
     // 3. 组件中使用 vuex 中的函数 使用事件来绑定 提供一个类名来显示隐藏
     const show = (item) => {
-      store.commit('category/show', item.id)
-    }
+      store.commit('category/show', item.id);
+    };
+
     const hide = (item) => {
-      store.commit('category/hide', item.id)
-    }
+      store.commit('category/hide', item.id);
+    };
 
     return {
       list,
       show,
-      hide
-    }
+      hide,
+    };
   },
 };
 </script>
@@ -59,6 +64,7 @@ export default {
   justify-content: space-around;
   padding-left: 40px;
   position: relative;
+  z-index: 999;
   > li {
     margin-right: 40px;
     width: 38px;
@@ -85,7 +91,7 @@ export default {
 
 // 二级类目弹层
 .layer {
-  &.open{
+  &.open {
     height: 132px;
     opacity: 1;
   }
@@ -98,7 +104,7 @@ export default {
   overflow: hidden;
   opacity: 0;
   box-shadow: 0 0 5px #ccc;
-  transition: all .2s .1s;
+  transition: all 0.2s 0.1s;
   ul {
     display: flex;
     flex-wrap: wrap;

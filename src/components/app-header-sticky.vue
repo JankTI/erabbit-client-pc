@@ -1,11 +1,11 @@
 <template>
-  <div class="app-header-sticky" :class="{show:y>= 180}">
-    <div class="container" v-show="y>=180">
+  <div class="app-header-sticky" :class="{ show: y >= 180 }">
+    <div class="container" v-show="y >= 180">
       <RouterLink class="logo" to="/" />
       <AppHeaderNav />
       <div class="right">
-        <RouterLink to="/" >品牌</RouterLink>
-        <RouterLink to="/" >专题</RouterLink>
+        <RouterLink to="/">品牌</RouterLink>
+        <RouterLink to="/">专题</RouterLink>
       </div>
     </div>
   </div>
@@ -13,12 +13,12 @@
 
 <script>
 // import { onMounted, ref } from 'vue'
-import { useWindowScroll } from '@vueuse/core'
-import AppHeaderNav from './app-header-nav'
+import { useWindowScroll } from '@vueuse/core';
+import AppHeaderNav from './app-header-nav';
 export default {
   name: 'AppHeaderSticky',
   components: { AppHeaderNav },
-  setup(){
+  setup() {
     // js 操作dom
     /* // 记录y轴卷去的高度
     const y = ref(0)
@@ -33,10 +33,10 @@ export default {
       y
     } */
 
-    const { y } = useWindowScroll()
-    return { y }
-  }
-}
+    const { y } = useWindowScroll();
+    return { y };
+  },
+};
 </script>
 
 <style scoped lang='less'>
@@ -51,8 +51,8 @@ export default {
   border-bottom: 1px solid #e4e4e4;
   transform: translateY(-100%);
   opacity: 0;
-  &.show{
-    transition: all .3s linear;
+  &.show {
+    transition: all 0.3s linear;
     transform: none;
     opacity: 1;
   }
@@ -64,7 +64,7 @@ export default {
   .logo {
     width: 200px;
     height: 80px;
-    background: url(../assets/images/logo.png) no-repeat  right 2px;
+    background: url(../assets/images/logo.png) no-repeat right 2px;
     background-size: 160px auto;
   }
   .right {

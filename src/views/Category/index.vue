@@ -1,16 +1,20 @@
 <template>
-  <div class="top-categroy">TopCategory</div>
+  <div class="top-categroy">
+    <div class="container">
+      <!-- 面包屑 -->
+      <!-- 轮播图 -->
+      <!-- 全部分类 -->
+      <!-- 各个分类推荐商品 -->
+    </div>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'TopCategory',
-  setup(){
-
-  }
+  setup() {},
 };
 </script>
 
 <style lang="less" scoped>
-
 </style>
