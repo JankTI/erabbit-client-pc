@@ -17,7 +17,6 @@ export const useLazyData = (apiFn) => {
     ([{ isIntersecting }], observerElement) => {
       // isIntersecting 是否进入可视区
       if (isIntersecting) {
-        console.log('进入可视区');
         stop()
         // 调用API函数获取数据
         apiFn().then(data => {

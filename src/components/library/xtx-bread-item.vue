@@ -3,7 +3,6 @@
     <router-link v-if="to" :to="to"><slot /></router-link>
     <span v-else><slot /></span>
   </div>
-  <i class="iconfont icon-angle-right"></i>
 </template>
 
 <script>
