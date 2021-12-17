@@ -4,7 +4,11 @@
       <!-- 面包屑 -->
       <XtxBread>
         <XtxBreadItem to="/">首页</XtxBreadItem>
-        <XtxBreadItem>{{ topCategory.name }}</XtxBreadItem>
+        <Transition name="fade-right" mode="out-in">
+          <XtxBreadItem :key="topCategory.id">{{
+            topCategory.name
+          }}</XtxBreadItem>
+        </Transition>
       </XtxBread>
       <!-- 轮播图 -->
       <XtxCarousel :sliders="sliders" style="height: 500px" />
@@ -20,39 +24,42 @@
           </li>
         </ul>
       </div>
-      <!-- 分类关联商品 -->
-      <div class="ref-goods">
+      <!-- 各个分类推荐商品 -->
+      <div class="ref-goods" v-for="sub in subList" :key="sub.id">
         <div class="head">
-          <h3>- 海鲜 -</h3>
+          <h3>- {{ sub.name }} -</h3>
           <p class="tag">温暖柔软，品质之选</p>
-          <XtxMore />
+          <XtxMore :path="`/category/sub/${sub.id}`" />
         </div>
         <div class="body">
-          <GoodsItem v-for="i in 5" :key="i" />
+          <GoodsItem
+            v-for="goods in sub.goods"
+            :key="goods.id"
+            :goods="goods"
+          />
         </div>
       </div>
     </div>
   </div>
 </template>
-
 <script>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { findBanner } from '@/api/home';
 import { useStore } from 'vuex';
 import { useRoute } from 'vue-router';
 import GoodsItem from './components/goods-item';
+import { findTopCategory } from '@/api/category';
 export default {
   name: 'TopCategory',
-  components: {
-    GoodsItem,
-  },
+  components: { GoodsItem },
   setup() {
     // 轮播图
     const sliders = ref([]);
     findBanner().then((data) => {
       sliders.value = data.result;
     });
-    // 面包屑+所有子分类 ==> vuex
+
+    // 面包屑+所有子分类 ====> vuex
     const store = useStore();
     const route = useRoute();
     const topCategory = computed(() => {
@@ -61,19 +68,36 @@ export default {
       const item = store.state.category.list.find((item) => {
         return item.id === route.params.id;
       });
+      // 找到数据赋值
       if (item) cate = item;
       return cate;
     });
 
+    // 获取各个子类目下推荐商品
+    const subList = ref([]);
+    const getSubList = () => {
+      findTopCategory(route.params.id).then((data) => {
+        subList.value = data.result.children;
+      });
+    };
+    watch(
+      () => route.params.id,
+      (newVal) => {
+        // newVal && getSubList() 加上一个严谨判断，在顶级类名下才发请求
+        if (newVal && `/category/${newVal}` === route.path) getSubList();
+      },
+      { immediate: true }
+    );
+
     return {
       sliders,
       topCategory,
+      subList,
     };
   },
 };
 </script>
-
-<style lang="less" scoped>
+<style scoped lang="less">
 .top-category {
   h3 {
     font-size: 28px;
@@ -89,6 +113,7 @@ export default {
       display: flex;
       padding: 0 32px;
       flex-wrap: wrap;
+      min-height: 160px;
       li {
         width: 168px;
         height: 160px;

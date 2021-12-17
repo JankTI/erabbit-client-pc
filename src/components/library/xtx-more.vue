@@ -11,10 +11,10 @@ export default {
   props: {
     path: {
       type: String,
-      default: '/',
-    },
-  },
-};
+      default: '/'
+    }
+  }
+}
 </script>
 
 <style scoped lang='less'>
@@ -34,8 +34,7 @@ export default {
     color: #ccc;
   }
   &:hover {
-    span,
-    i {
+    span,i {
       color: @xtxColor;
     }
   }

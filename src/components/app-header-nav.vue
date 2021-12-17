@@ -1,21 +1,14 @@
 <template>
   <ul class="app-header-nav">
     <li class="home"><RouterLink to="/">首页</RouterLink></li>
-    <li
-      v-for="item in list"
-      :key="item.id"
-      @mouseenter="show(item)"
-      @mouseleave="hide(item)"
-    >
-      <RouterLink @click="hide(item)" :to="`/category/${item.id}`">{{
-        item.name
-      }}</RouterLink>
-      <div class="layer" :class="{ open: item.open }">
+    <li v-for="item in list" :key="item.id" @mousemove="show(item)" @mouseleave="hide(item)">
+      <RouterLink @click="hide(item)" :to="`/category/${item.id}`">{{item.name}}</RouterLink>
+      <div class="layer" :class="{open:item.open}">
         <ul>
           <li v-for="sub in item.children" :key="sub.id">
-            <RouterLink @click="hide(item)" :to="`/category/sub/${item.id}`">
-              <img :src="sub.picture" alt="" />
-              <p>{{ sub.name }}</p>
+            <RouterLink  @click="hide(item)" :to="`/category/sub/${sub.id}`">
+              <img :src="sub.picture" alt="">
+              <p>{{sub.name}}</p>
             </RouterLink>
           </li>
         </ul>
@@ -23,41 +16,33 @@
     </li>
   </ul>
 </template>
-
 <script>
-import { computed } from 'vue';
-import { useStore } from 'vuex';
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 export default {
   name: 'AppHeaderNav',
-  setup() {
-    const store = useStore();
-    // 拿到 vuex中的分类列表
+  setup () {
+    const store = useStore()
+    // 拿到vuex中的分类列表
     const list = computed(() => {
-      return store.state.category.list;
-    });
+      return store.state.category.list
+    })
 
-    // 跳转的时候不会关闭二级类目 通过数据来控制
-    // 1. vuex 每个分类加上open数据
-    // 2. vuex 提供显示和隐藏函数 修改open数据
-    // 3. 组件中使用 vuex 中的函数 使用事件来绑定 提供一个类名来显示隐藏
+    // 跳转的时候不会关闭二级类目，通过数据来控制
+    // 1. vuex每个分类加上open数据
+    // 2. vuex提供显示和隐藏函数，修改open数据
+    // 3. 组件中使用vuex中的函数，使用时间来绑定，提供一个类名显示隐藏的类名
     const show = (item) => {
-      store.commit('category/show', item.id);
-    };
-
+      store.commit('category/show', item.id)
+    }
     const hide = (item) => {
-      store.commit('category/hide', item.id);
-    };
-
-    return {
-      list,
-      show,
-      hide,
-    };
-  },
-};
+      store.commit('category/hide', item.id)
+    }
+    return { list, show, hide }
+  }
+}
 </script>
-
-<style lang="less" scoped>
+<style scoped lang="less">
 .app-header-nav {
   width: 820px;
   display: flex;
@@ -88,8 +73,7 @@ export default {
     }
   }
 }
-
-// 二级类目弹层
+// 二级类名弹层
 .layer {
   &.open {
     height: 132px;
@@ -104,7 +88,7 @@ export default {
   overflow: hidden;
   opacity: 0;
   box-shadow: 0 0 5px #ccc;
-  transition: all 0.2s 0.1s;
+  transition: all .2s .1s;
   ul {
     display: flex;
     flex-wrap: wrap;

@@ -1,11 +1,11 @@
 <template>
-  <div class="app-header-sticky" :class="{ show: y >= 180 }">
-    <div class="container" v-show="y >= 180">
+  <div class="app-header-sticky" :class="{show:y>=78}">
+    <div class="container" v-show="y>=78">
       <RouterLink class="logo" to="/" />
       <AppHeaderNav />
       <div class="right">
-        <RouterLink to="/">品牌</RouterLink>
-        <RouterLink to="/">专题</RouterLink>
+        <RouterLink to="/" >品牌</RouterLink>
+        <RouterLink to="/" >专题</RouterLink>
       </div>
     </div>
   </div>
@@ -13,30 +13,29 @@
 
 <script>
 // import { onMounted, ref } from 'vue'
-import { useWindowScroll } from '@vueuse/core';
-import AppHeaderNav from './app-header-nav';
+import { useWindowScroll } from '@vueuse/core'
+import AppHeaderNav from './app-header-nav'
 export default {
   name: 'AppHeaderSticky',
   components: { AppHeaderNav },
-  setup() {
-    // js 操作dom
-    /* // 记录y轴卷去的高度
-    const y = ref(0)
-    // 当你页面滚动的时候更新它
-    onMounted(() => {
-      window.onscroll = () => {
-        const scrollTop = document.documentElement.scrollTop;
-        y.value = scrollTop
-      }
-    })
-    return {
-      y
-    } */
-
-    const { y } = useWindowScroll();
-    return { y };
-  },
-};
+  setup () {
+    const { y } = useWindowScroll()
+    return { y }
+  }
+  // setup () {
+  //   // 记录y轴卷曲的高度
+  //   const y = ref(0)
+  //   // 当你页面滚动的时候更新它
+  //   onMounted(() => {
+  //     window.onscroll = () => {
+  //       const scrollTop = document.documentElement.scrollTop
+  //       y.value = scrollTop
+  //     }
+  //   })
+  //   // 提供y给模版
+  //   return { y }
+  // }
+}
 </script>
 
 <style scoped lang='less'>
@@ -56,7 +55,6 @@ export default {
     transform: none;
     opacity: 1;
   }
-
   .container {
     display: flex;
     align-items: center;
@@ -64,7 +62,7 @@ export default {
   .logo {
     width: 200px;
     height: 80px;
-    background: url(../assets/images/logo.png) no-repeat right 2px;
+    background: url(../assets/images/logo.png) no-repeat  right 2px;
     background-size: 160px auto;
   }
   .right {
