@@ -35,14 +35,14 @@
         >默认</a
       >
       <a
+        @click="changeSort('createTime')"
         :class="{ active: reqParams.sortField === 'createTime' }"
         href="javascript:;"
-        @click="changeSort('createTime')"
         >最新</a
       >
       <a
-        :class="{ active: reqParams.sortField === 'praiseCount' }"
         @click="changeSort('praiseCount')"
+        :class="{ active: reqParams.sortField === 'praiseCount' }"
         href="javascript:;"
         >最热</a
       >
@@ -52,7 +52,7 @@
       <div class="item" v-for="item in commentList" :key="item.id">
         <div class="user">
           <img :src="item.member.avatar" alt="" />
-          <span>{{ formatNickName(item.member.nickname) }}</span>
+          <span>{{ formatNickname(item.member.nickname) }}</span>
         </div>
         <div class="body">
           <div class="score">
@@ -68,9 +68,7 @@
             ></i>
             <span class="attr">{{ formatSpecs(item.orderInfo.specs) }}</span>
           </div>
-          <div class="text">
-            {{ item.content }}
-          </div>
+          <div class="text">{{ item.content }}</div>
           <!-- 评论图片组件 -->
           <GoodsCommentImage
             v-if="item.pictures.length"
@@ -89,7 +87,6 @@
     <XtxPagination
       v-if="total"
       @current-change="changePagerFn"
-      :total="total"
       :page-size="reqParams.pageSize"
       :current-page="reqParams.page"
     />
@@ -97,19 +94,16 @@
 </template>
 <script>
 import { inject, reactive, ref, watch } from 'vue';
-import GoodsCommentImage from './goods-comment-image';
 import { findGoodsCommentInfo, findGoodsCommentList } from '@/api/product';
+import GoodsCommentImage from './goods-comment-image';
 export default {
   name: 'GoodsComment',
-  components: {
-    GoodsCommentImage,
-  },
+  components: { GoodsCommentImage },
   setup() {
     // 获取评价信息
     const commentInfo = ref(null);
     const goods = inject('goods');
     findGoodsCommentInfo(goods.value.id).then((data) => {
-      // 设置数据之前，tags数组钱追加 有图tag 全部评价 tag
       data.result.tags.unshift({
         title: '有图',
         tagCount: data.result.hasPictureCount,
@@ -120,15 +114,19 @@ export default {
         tagCount: data.result.evaluateCount,
         type: 'all',
       });
+      // 设置数据之前，tags数组前追加 有图tag  全部评价tag
       commentInfo.value = data.result;
     });
-    // 激活 tag
+
+    // 激活tag
     const currentTagIndex = ref(0);
-    const changeTag = (index) => {
-      currentTagIndex.value = index;
+    const changeTag = (i) => {
+      currentTagIndex.value = i;
       // 点击tag的时候修改筛选条件
-      const tag = commentInfo.value.tags[index];
-      // 情况1 全部评价 情况2 有图 情况3 正常tag
+      const tag = commentInfo.value.tags[i];
+      // 情况1：全部评价
+      // 情况2：有图
+      // 情况3：正常tag
       if (tag.type === 'all') {
         reqParams.hasPicture = null;
         reqParams.tag = null;
@@ -139,13 +137,14 @@ export default {
         reqParams.hasPicture = null;
         reqParams.tag = tag.title;
       }
-      // 页面重置1
+      // 重置页码1
       reqParams.page = 1;
     };
 
     // 点击排序
     const changeSort = (sortField) => {
       reqParams.sortField = sortField;
+      // 重置页码1
       reqParams.page = 1;
     };
 
@@ -155,11 +154,11 @@ export default {
       pageSize: 10,
       hasPicture: null,
       tag: null,
-      // 排序方式: praiseCount 热度 createTime 最新
+      // 排序方式：praiseCount 热度  createTime 最新
       sortField: null,
     });
 
-    // 初始化需要发请求 筛选条件发送改变发请求
+    // 初始化需要发请求，筛选条件发生改变发请求
     const commentList = ref([]);
     const total = ref(0);
     watch(
@@ -170,16 +169,16 @@ export default {
           total.value = data.result.counts;
         });
       },
-      {
-        immediate: true,
-      }
+      { immediate: true }
     );
 
-    // 定义转换数据的函数
+    // 定义转换数据的函数（对应vue2.0的过滤器）
     const formatSpecs = (specs) => {
-      return specs.reduce((p, c) => `${p} ${c.name} ${c.nameValue}`, '').trim();
+      return specs
+        .reduce((p, c) => `${p} ${c.name}：${c.nameValue}`, '')
+        .trim();
     };
-    const formatNickName = (nickname) => {
+    const formatNickname = (nickname) => {
       return nickname.substr(0, 1) + '****' + nickname.substr(-1);
     };
 
@@ -196,8 +195,9 @@ export default {
       commentList,
       changeSort,
       formatSpecs,
-      formatNickName,
+      formatNickname,
       total,
+      changePagerFn,
     };
   },
 };
