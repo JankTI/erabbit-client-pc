@@ -1,6 +1,6 @@
 <template>
   <div class="home-product" ref="target">
-    <HomePanel :title="cate.title" v-for="cate in list" :key="cate.id">
+    <HomePanel :title="cate.name" v-for="cate in list" :key="cate.id">
       <template v-slot:right>
         <div class="sub">
           <RouterLink
@@ -16,7 +16,7 @@
         <RouterLink class="cover" :to="`/category/${cate.id}`">
           <img v-lazy="cate.picture" alt="" />
           <strong class="label">
-            <span>{{ cate.name }}</span>
+            <span>{{ cate.name }}馆</span>
             <span>{{ cate.saleInfo }}</span>
           </strong>
         </RouterLink>
@@ -40,11 +40,7 @@ export default {
   components: { HomePanel, HomeGoods },
   setup() {
     const { target, result } = useLazyData(findGoods);
-
-    return {
-      target,
-      list: result,
-    };
+    return { target, list: result };
   },
 };
 </script>

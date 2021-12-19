@@ -33,10 +33,10 @@ export default {
   z-index: 98;
 }
 .xtx-carousel {
-  ::v-deep .carousel-btn.prev {
+  :deep .carousel-btn.prev {
     left: 270px;
   }
-  ::v-deep .carousel-indicator {
+  :deep .carousel-indicator {
     padding-left: 250px;
   }
 }
