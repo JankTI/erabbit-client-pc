@@ -47,7 +47,7 @@ export default {
       const defaultAddress = props.goods.userAddresses.find(
         (item) => item.isDefault === 1
       );
-      if (defaultAddresss) {
+      if (defaultAddress) {
         provinceCode.value = defaultAddress.provinceCode;
         cityCode.value = defaultAddress.cityCode;
         countCode.value = defaultAddress.countCode;
@@ -64,6 +64,7 @@ export default {
 
     return {
       fullLocation,
+      changeCity,
     };
   },
 };

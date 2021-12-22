@@ -52,6 +52,6 @@ export const findGoodsCommentInfo = (id) => {
  * @param {Object} params - 参数
  * @returns
  */
-export const findGoodsCommentList = (id, params) => {
+export const findGoodsCommentList = ({ id, params }) => {
   return request(`https://mock.boxuegu.com/mock/1175/goods/${id}/evaluate/page`, 'get', params)
 }

@@ -1,18 +1,15 @@
 <template>
   <div>
-    <RouterView/>
+    <RouterView />
   </div>
 </template>
 
 <script>
 export default {
   name: 'App',
-  setup () {
-
-  }
-}
+  setup() {},
+};
 </script>
 
 <style lang="less" scoped>
-
 </style>

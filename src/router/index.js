@@ -1,10 +1,15 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import store from '@/store'
 
 const Layout = () => import('@/views/Layout')
 const Home = () => import('@/views/Home')
 const TopCategory = () => import('@/views/Category')
 const SubCategory = () => import('@/views/Category/sub')
 const Goods = () => import('@/views/Goods')
+const Cart = () => import('@/views/Cart')
+
+const Login = () => import('@/views/Login')
+const LoginCallback = () => import('@/views/Login/callback')
 
 // 路由规则
 const routes = [
@@ -28,8 +33,20 @@ const routes = [
       {
         path: '/product/:id',
         component: Goods
+      },
+      {
+        path: '/cart',
+        component: Cart
       }
     ]
+  },
+  {
+    path: '/login',
+    component: Login
+  },
+  {
+    path: '/login/callback',
+    component: LoginCallback
   }
 ]
 
@@ -43,6 +60,16 @@ const router = createRouter({
       top: 0
     }
   }
+})
+
+// 前置导航守卫
+router.beforeEach((to, from, next) => {
+  // 需要登录的路由：地址是以 /member 开头
+  const { profile } = store.state.user
+  if (!profile.token && to.path.startsWith('/member')) {
+    return next('/login?redirectUrl=' + encodeURIComponent(to.fullPath))
+  }
+  next()
 })
 
 export default router
