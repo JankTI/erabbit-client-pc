@@ -33,13 +33,13 @@
     <!-- 弹层 -->
     <div class="layer">
       <h4>
-        {{ currCategory && currCategory.id === "brand" ? "品牌" : "分类" }}推荐
+        {{ currCategory && currCategory.id === 'brand' ? '品牌' : '分类' }}推荐
         <small>根据您的购买或浏览记录推荐</small>
       </h4>
       <!-- 商品 -->
       <ul v-if="currCategory && currCategory.goods">
         <li v-for="item in currCategory.goods" :key="item.id">
-          <RouterLink to="/">
+          <RouterLink :to="`/product/${item.id}`">
             <img :src="item.picture" alt="" />
             <div class="info">
               <p class="name ellipsis-2">{{ item.name }}</p>
@@ -70,17 +70,17 @@
 </template>
 
 <script>
-import { computed, reactive, ref } from "vue";
-import { useStore } from "vuex";
-import { findBrand } from "@/api/home";
+import { computed, reactive, ref } from 'vue';
+import { useStore } from 'vuex';
+import { findBrand } from '@/api/home';
 export default {
-  name: "HomeCategory",
+  name: 'HomeCategory',
   setup() {
     const store = useStore();
     const brand = reactive({
-      id: "brand",
-      name: "品牌",
-      children: [{ id: "brand-children", name: "品牌推荐" }],
+      id: 'brand',
+      name: '品牌',
+      children: [{ id: 'brand-children', name: '品牌推荐' }],
       // 品牌列表
       brands: [],
     });
