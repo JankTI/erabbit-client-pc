@@ -11,6 +11,8 @@ const Cart = () => import('@/views/Cart')
 const Login = () => import('@/views/Login')
 const LoginCallback = () => import('@/views/Login/callback')
 
+const Checkout = () => import('@/views/Member/pay/checkout')
+
 // 路由规则
 const routes = [
   // 一级路由布局容器
@@ -37,6 +39,10 @@ const routes = [
       {
         path: '/cart',
         component: Cart
+      },
+      {
+        path: '/member/checkout',
+        component: Checkout
       }
     ]
   },

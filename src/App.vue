@@ -6,10 +6,10 @@
 
 <script>
 export default {
-  name: 'App',
-  setup() {},
+  name: "App",
+  setup () { },
 };
+
 </script>
 
-<style lang="less" scoped>
-</style>
+<style lang="less" scoped></style>
