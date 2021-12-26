@@ -46,3 +46,13 @@ export const submitOrder = (params) => {
 export const findOrderDetail = (orderId) => {
   return request('/member/order/' + orderId, 'get')
 }
+
+/**
+ * 获取订单列表
+ * @param {String} page - 页码
+ * @param {String} pageSize - 每页条数
+ * @param {String} orderState - 订单状态: 1. 待付款 2. 待发货 3. 待收货 4. 待评价 5. 已完成 6. 已取消
+ */
+export const findOrderList = ({ page = 1, pageSize = 10, orderState = 0 }) => {
+  return request('/member/order', 'get', { page, pageSize, orderState })
+}
