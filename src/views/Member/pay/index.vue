@@ -7,15 +7,19 @@
         <XtxBreadItem>支付订单</XtxBreadItem>
       </XtxBread>
       <!-- 付款信息 -->
-      <div class="pay-info">
+      <div class="pay-info" v-if="order">
         <span class="icon iconfont icon-queren2"></span>
         <div class="tip">
           <p>订单提交成功！请尽快完成支付。</p>
-          <p>支付还剩 <span>24分59秒</span>, 超时后将取消订单</p>
+          <p v-if="order.countdown > -1">
+            支付还剩 <span>{{ timeText }}</span
+            >, 超时后将取消订单
+          </p>
+          <p v-else>订单已经超时</p>
         </div>
         <div class="amount">
           <span>应付总额：</span>
-          <span>¥5673.00</span>
+          <span>¥{{ order.payMoney }}</span>
         </div>
       </div>
       <!-- 付款方式 -->
@@ -24,7 +28,12 @@
         <div class="item">
           <p>支付平台</p>
           <a class="btn wx" href="javascript:;"></a>
-          <a class="btn alipay" href="javascript:;"></a>
+          <a
+            class="btn alipay"
+            @click="visibleDialog = true"
+            :href="payUrl"
+            target="_blank"
+          ></a>
         </div>
         <div class="item">
           <p>支付方式</p>
@@ -36,11 +45,59 @@
         </div>
       </div>
     </div>
+    <!-- 支付提示对话框 -->
+    <XtxDialog title="正在支付..." v-model:visible="visibleDialog">
+      <div class="pay-wait">
+        <img src="@/assets/images/load.gif" alt="" />
+        <div v-if="order">
+          <p>如果支付成功：</p>
+          <RouterLink :to="`/member/order/${$route.query.orderId}`"
+            >查看订单详情></RouterLink
+          >
+          <p>如果支付失败：</p>
+          <RouterLink to="/">查看相关疑问></RouterLink>
+        </div>
+      </div>
+    </XtxDialog>
   </div>
 </template>
 <script>
+import { ref } from "vue";
+import { useRoute } from "vue-router";
+import { findOrderDetail } from "@/api/order";
+import { usePayTime } from "@/hooks";
+import { baseURL } from "@/utils/request";
+
 export default {
   name: "XtxPayPage",
+  setup() {
+    const route = useRoute();
+    const order = ref(null);
+    findOrderDetail(route.query.orderId).then((data) => {
+      order.value = data.result;
+      // 后端提供 countdown 倒计时秒数
+      if (data.result.countdown > -1) {
+        start(data.result.countdown);
+      }
+    });
+    // 倒计时函数
+    const { start, timeText } = usePayTime();
+
+    // 支付地址
+    const redirect = encodeURIComponent(
+      "http://www.corho.com:8080/#/pay/callback"
+    );
+    const payUrl = `${baseURL}pay/aliPay?orderId=${route.query.orderId}&redirect=${redirect}`;
+
+    const visibleDialog = ref(false);
+
+    return {
+      order,
+      timeText,
+      payUrl,
+      visibleDialog,
+    };
+  },
 };
 </script>
 <style scoped lang="less">
@@ -115,6 +172,17 @@ export default {
       background: url(https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/c66f98cff8649bd5ba722c2e8067c6ca.jpg)
         no-repeat center / contain;
     }
+  }
+}
+.pay-wait {
+  display: flex;
+  justify-content: space-around;
+  p {
+    margin-top: 30px;
+    font-size: 14px;
+  }
+  a {
+    color: @xtxColor;
   }
 }
 </style>

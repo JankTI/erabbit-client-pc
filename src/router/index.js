@@ -1,5 +1,6 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, RouterView } from 'vue-router'
 import store from '@/store'
+import { h } from 'vue'
 
 const Layout = () => import('@/views/Layout')
 const Home = () => import('@/views/Home')
@@ -12,6 +13,13 @@ const Login = () => import('@/views/Login')
 const LoginCallback = () => import('@/views/Login/callback')
 
 const Checkout = () => import('@/views/Member/pay/checkout')
+const Pay = () => import('@/views/Member/pay')
+const PayResult = () => import('@/views/Member/pay/result')
+
+const MemberLayout = () => import('@/views/Member/Layout')
+const MemberHome = () => import('@/views/Member/home')
+const MemberOrder = () => import('@/views/Member/order')
+const MemberOrderDetail = () => import('@/views/Member/order/detail')
 
 // 路由规则
 const routes = [
@@ -43,6 +51,47 @@ const routes = [
       {
         path: '/member/checkout',
         component: Checkout
+      },
+      {
+        path: '/member/pay',
+        component: Pay
+      },
+      {
+        path: '/pay/callback',
+        component: PayResult
+      },
+      {
+        path: '/member',
+        component: MemberLayout,
+        children: [
+          {
+            path: '/member',
+            component: MemberHome
+          },
+          // {
+          //   path: '/member/order',
+          //   component: MemberOrder
+          // },
+          // {
+          //   path: '/member/order/:id',
+          //   component: MemberOrderDetail
+          // }
+          {
+            path: '/member/order',
+            // 创建一个RouterView 容器形成嵌套关系
+            component: { render: () => h(<RouterView />) },
+            children: [
+              {
+                path: '',
+                component: MemberOrder
+              },
+              {
+                path: ':id',
+                component: MemberOrderDetail
+              }
+            ]
+          }
+        ]
       }
     ]
   },
@@ -60,7 +109,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
   // 每次切换路由的时候滚动到页面顶部
-  scrollBehavior() {
+  scrollBehavior () {
     return {
       left: 0,
       top: 0

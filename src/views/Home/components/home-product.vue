@@ -31,12 +31,12 @@
 </template>
 
 <script>
-import HomePanel from './home-panel';
-import HomeGoods from './home-goods';
-import { useLazyData } from '@/hooks';
-import { findGoods } from '@/api/home';
+import HomePanel from "./home-panel";
+import HomeGoods from "./home-goods";
+import { useLazyData } from "@/hooks";
+import { findGoods } from "@/api/home";
 export default {
-  name: 'HomeProduct',
+  name: "HomeProduct",
   components: { HomePanel, HomeGoods },
   setup() {
     const { target, result } = useLazyData(findGoods);
@@ -45,7 +45,7 @@ export default {
 };
 </script>
 
-<style scoped lang='less'>
+<style scoped lang="less">
 .home-product {
   background: #fff;
   height: 2900px;
