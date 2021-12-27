@@ -20,6 +20,8 @@
         :order="item"
         @on-cancel="handlerCancel"
         @on-delete="handlerDelete"
+        @on-confirm="handlerConfirm"
+        @on-logistics="handlerLogistics"
       ></OrderItem>
     </div>
     <!-- 分页组件 -->
@@ -32,6 +34,8 @@
     />
     <!-- 取消原因组件 -->
     <OrderCancel ref="orderCancelCom" />
+    <!-- 查看物流组件 -->
+    <OrderLogistics ref="orderLogisticsCom" />
   </div>
 </template>
 
@@ -40,7 +44,8 @@ import { reactive, ref, watch } from "vue";
 import { orderStatus } from "@/api/constants";
 import OrderItem from "./components/order-item";
 import OrderCancel from "./components/order-cancel";
-import { deleteOrder, findOrderList } from "@/api/order";
+import OrderLogistics from "./components/order-logistics";
+import { confirmOrder, deleteOrder, findOrderList } from "@/api/order";
 import Message from "@/components/library/Message";
 import Confirm from "@/components/library/Confirm";
 export default {
@@ -48,6 +53,7 @@ export default {
   components: {
     OrderItem,
     OrderCancel,
+    OrderLogistics,
   },
   setup() {
     const activeName = ref("all");
@@ -109,6 +115,8 @@ export default {
       reqParams,
       handlerDelete,
       ...useCancel(),
+      ...useConfirm(),
+      ...useLogistics(),
     };
   },
 };
@@ -125,6 +133,40 @@ const useCancel = () => {
   return {
     handlerCancel,
     orderCancelCom,
+  };
+};
+
+// 确认收货逻辑
+const useConfirm = () => {
+  const handlerConfirm = (order) => {
+    Confirm({
+      text: "确认收到货？",
+    })
+      .then(() => {
+        confirmOrder(order.id).then(() => {
+          Message({ type: "success", text: "确认收货成功" });
+          // 待收货 => 待评价
+          order.orderState = 4;
+        });
+      })
+      .catch(() => {});
+  };
+
+  return {
+    handlerConfirm,
+  };
+};
+
+// 查看物流逻辑
+const useLogistics = () => {
+  const orderLogisticsCom = ref(null);
+  const handlerLogistics = (order) => {
+    orderLogisticsCom.value.open(order);
+  };
+
+  return {
+    handlerLogistics,
+    orderLogisticsCom,
   };
 };
 </script>

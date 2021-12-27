@@ -76,3 +76,20 @@ export const cancelOrder = ({ orderId, cancelReason }) => {
 export const deleteOrder = (orderId) => {
   return request('/member/order', 'delete', { ids: [orderId] })
 }
+
+
+/**
+ * 确认收货
+ * @param {String} orderId - 订单Id
+ */
+export const confirmOrder = (orderId) => {
+  return request(`/member/order/${orderId}/receipt`, 'put')
+}
+
+/**
+ * 查询物流
+ * @param {String} orderId - 订单Id
+ */
+export const logisticsOrder = (orderId) => {
+  return request(`/member/order/${orderId}/logistics`, 'get')
+}
