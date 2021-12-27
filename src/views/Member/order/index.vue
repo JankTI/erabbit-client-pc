@@ -158,7 +158,7 @@ const useConfirm = () => {
 };
 
 // 查看物流逻辑
-const useLogistics = () => {
+export const useLogistics = () => {
   const orderLogisticsCom = ref(null);
   const handlerLogistics = (order) => {
     orderLogisticsCom.value.open(order);
