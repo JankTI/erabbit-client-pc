@@ -18,6 +18,8 @@
         v-for="item in orderList"
         :key="item.id"
         :order="item"
+        @on-cancel="handlerCancel"
+        @on-delete="handlerDelete"
       ></OrderItem>
     </div>
     <!-- 分页组件 -->
@@ -28,6 +30,8 @@
       :total="total"
       @current-change="reqParams.page = $event"
     />
+    <!-- 取消原因组件 -->
+    <OrderCancel ref="orderCancelCom" />
   </div>
 </template>
 
@@ -35,11 +39,15 @@
 import { reactive, ref, watch } from "vue";
 import { orderStatus } from "@/api/constants";
 import OrderItem from "./components/order-item";
-import { findOrderList } from "@/api/order";
+import OrderCancel from "./components/order-cancel";
+import { deleteOrder, findOrderList } from "@/api/order";
+import Message from "@/components/library/Message";
+import Confirm from "@/components/library/Confirm";
 export default {
   name: "MemberOrder",
   components: {
     OrderItem,
+    OrderCancel,
   },
   setup() {
     const activeName = ref("all");
@@ -53,25 +61,42 @@ export default {
     const orderList = ref([]);
     const loading = ref(false);
     const total = ref(0);
+
+    const getOrderList = () => {
+      loading.value = true;
+      findOrderList(reqParams).then((data) => {
+        orderList.value = data.result.items;
+        total.value = data.result.counts;
+        loading.value = false;
+      });
+    };
     // 筛选条件变化重新加载
     watch(
       reqParams,
       () => {
-        loading.value = true;
-        findOrderList(reqParams).then((data) => {
-          orderList.value = data.result.items;
-          total.value = data.result.counts;
-          loading.value = false;
-        });
+        getOrderList();
       },
       {
         immediate: true,
       }
     );
+
     // 点击选项卡
     const tabClick = ({ index }) => {
       reqParams.page = 1;
       reqParams.orderState = index;
+    };
+
+    // 删除订单
+    const handlerDelete = (order) => {
+      Confirm({ text: "确定删除该订单吗？" })
+        .then(() => {
+          deleteOrder(order.id).then(() => {
+            Message({ type: "success", text: "删除成功" });
+            getOrderList();
+          });
+        })
+        .catch(() => {});
     };
 
     return {
@@ -82,8 +107,25 @@ export default {
       loading,
       total,
       reqParams,
+      handlerDelete,
+      ...useCancel(),
     };
   },
+};
+
+// 取消订单逻辑
+const useCancel = () => {
+  // 组件实例
+  const orderCancelCom = ref(null);
+  // 点击取消
+  const handlerCancel = (order) => {
+    orderCancelCom.value.open(order);
+  };
+
+  return {
+    handlerCancel,
+    orderCancelCom,
+  };
 };
 </script>
 
