@@ -17,6 +17,7 @@
       </template>
     </Suspense>
     <!-- 信息 -->
+    <DetailInfo :order="order" />
   </div>
 </template>
 
@@ -25,6 +26,7 @@ import { ref } from "vue";
 import DetailAction from "./components/detail-action";
 import DetailStep from "./components/detail-step";
 import DetailLogistics from "./components/detail-logistics";
+import DetailInfo from "./components/detail-info";
 import { findOrderDetail } from "@/api/order";
 import { useRoute } from "vue-router";
 export default {
@@ -33,6 +35,7 @@ export default {
     DetailAction,
     DetailStep,
     DetailLogistics,
+    DetailInfo,
   },
   setup() {
     const route = useRoute();

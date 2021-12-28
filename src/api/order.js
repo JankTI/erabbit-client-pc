@@ -3,7 +3,15 @@ import request from '@/utils/request'
 
 
 /**
- * 结算页面-生成订单
+ * 结算页面-生成订单-根据购物车选中的商品-再次购买
+ * @returns
+ */
+export const repurchaseOrder = (orderId) => {
+  return request('/member/order/repurchase/' + orderId, 'get')
+}
+
+/**
+ * 结算页面-生成订单-根据订单中商品
  * @returns
  */
 export const createOrder = () => {
